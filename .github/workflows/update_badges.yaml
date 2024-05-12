@@ -1,0 +1,36 @@
+name: Update Go Badges
+run-name: ${{ github.triggering_actor }} is refreshing the badges
+on:
+  push:
+    paths:
+      - '**.go'
+jobs:
+  update_coverage_badge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+      -
+        name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.21
+      -
+        name: Run Mage
+        uses: magefile/mage-action@v3
+        with:
+          install-only: true
+      - name: Test
+        run: mage test
+      - name: Update coverage report
+        uses: ncruces/go-coverage-report@v0.3.0
+        with:
+          report: true
+          chart: true
+          amend: true
+          coverage-file: ./cov/coverage.txt
+        continue-on-error: true
+  update_goreportcard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: creekorful/goreportcard-action@v1.0
