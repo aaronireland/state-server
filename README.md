@@ -1,6 +1,6 @@
 # State Server
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Go Coverage](https://github.com/aaronireland/state-server/wiki/coverage.svg?)](https://raw.githack.com/wiki/aaronireland/state-server/coverage.html)
+[![Go Coverage](https://github.com/aaronireland/state-server/wiki/coverage.svg?branch=main)](https://raw.githack.com/wiki/aaronireland/state-server/coverage.html)
 [![Go Report Card](https://goreportcard.com/badge/github.com/aaronireland/state-server?branch=main)](https://goreportcard.com/report/github.com/aaronireland/state-server)
 
 A simple REST API written in Go which maintains a collection of geographic representations of several US States (very roughly approximated) with the ability to
@@ -61,6 +61,29 @@ To stop the server using mage:
 ```shell
 mage server:stop
 ```
+
+### Example Requests
+
+ Get the state(s), if any, in which a location exists:
+
+```shell
+curl  -d "longitude=-77.036133&latitude=40.513799" http://localhost:8080/
+```
+outputs: `["Pennsylvania"]`
+
+```
+curl  -d "longitude=-77.036133&latitude=45" http://localhost:8080/
+
+```
+outputs: `{"status":"Not Found","error":"[-77.036133, 45] not within any state"}`
+
+Get the GeoJSON Feature object which contains the location data for Pennsylvania
+
+```shell
+curl http://localhost:8080/api/v1/state/pennsylvania
+```
+outputs (truncated): `"type":"Feature","properties":{"state":"Pennsylvania"},"geometry":{"type":"Polygon","coordinates":[[[-77.475793,39.719623],..., ]]}}`
+
 
 
 ## Testing
